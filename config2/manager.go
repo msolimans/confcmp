@@ -2,6 +2,7 @@ package config2
 
 import (
 	contracts "../contracts"
+	"errors"
 )
 
 type ConfigManager struct {
@@ -16,6 +17,26 @@ func newManager(configs []contracts.IConfig, comparer contracts.ICompare) contra
 func (self *ConfigManager) SetComparer(comparer contracts.ICompare){
 	self.comparer = comparer
 }
+
+
+func (self *ConfigManager) UpdateVersions(done chan bool) {
+
+	idone := make(chan bool)
+
+	for _, p := range self.configs {
+		go p.UpdateVersion(idone)
+	}
+
+	//wait for all of them here
+	for range self.configs{
+		<- idone
+	}
+
+	//emit final done here
+	done <- true
+}
+
+
 
 func (self *ConfigManager) Compare(p1 []byte, p2 []byte) (error, bool) {
 
@@ -36,14 +57,17 @@ func (self *ConfigManager) Compare(p1 []byte, p2 []byte) (error, bool) {
 		return err, false
 	}
 
+	done := make(chan bool, 1) //only 1 val and should be closed
+	go self.UpdateVersions(done)
 
-	eq := make(chan bool)
-	go self.comparer.Compare(self.configs[0], self.configs[1], eq)
-	return nil, <- eq
+	if <-done {
 
+		eq := make(chan bool)
+		go self.comparer.Compare(self.configs[0], self.configs[1], eq)
+		return nil, <-eq
+	}
 
-	//return errors.New("error during parsing version string or updating version!"), false
-
+	return errors.New("error during parsing version string or updating version!"), false
 }
 
 
