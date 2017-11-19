@@ -19,6 +19,7 @@ type YmlManager struct {
 
 func newPackageManager() *YmlManager {
 	return &YmlManager{make([]*Package, 2)} //2 packages, in case we need more in future
+
 }
 
 func (self *YmlManager) Unmarshal(in []byte, out interface{}) (chan error) {
@@ -105,5 +106,4 @@ func (self *YmlManager) Compare(p1 []byte, p2 []byte) (error, bool) {
 	}
 
 	return errors.New("error during parsing version string or updating version!"), false
-
 }

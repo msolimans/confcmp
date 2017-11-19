@@ -1,7 +1,7 @@
 package comparison
 
 import (
-	//"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp"
 	contracts "../contracts"
 	"reflect"
 )
@@ -24,3 +24,9 @@ func (self *GoCompare) Compare(config1, config2 contracts.IConfig, ch chan bool)
 }
 
 
+
+func (self *GoCompare) Diff(config1, config2 contracts.IConfig, ch chan string) {
+	go func(){
+		ch <- cmp.Diff(config1, config2)
+	}()
+}

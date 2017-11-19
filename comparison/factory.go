@@ -1,6 +1,7 @@
 package comparison
 
+import "../contracts"
 //Factory-Method
-func GetInstance() *SimpleCompare{
-	return newSimpleCompare()
+func GetInstance() contracts.ICompare {
+	return newGoCompare()
 }

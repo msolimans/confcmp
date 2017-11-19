@@ -4,4 +4,6 @@ package contracts
 type ICompare interface{
 
 	Compare(config1, config2 IConfig, ch chan bool)
+	Diff(config1, config2 IConfig, ch chan string)
+
 }

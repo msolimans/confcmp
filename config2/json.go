@@ -4,17 +4,18 @@ import (
 	. "../external"
 	"errors"
 )
+
+//implements IConfig
 type JsonConfig struct{
 	p *Package
 }
 
+func (self *JsonConfig) Unmarshal(in []byte, ch chan error) {
 
-func (self *JsonConfig) unmarshal(in []byte) (chan error) {
-	ch := make(chan error)
 	ch <- errors.New("Not implemented")
-	return ch
+
 }
 
-func (self *JsonConfig) marshal() (out []byte, err error) {
+func (self *JsonConfig) Marshal() (out []byte, err error) {
 	return nil, errors.New("Not implemented")
 }

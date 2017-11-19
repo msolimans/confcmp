@@ -18,3 +18,18 @@ func (self *SimpleCompare) Compare(config1, config2 contracts.IConfig, ch chan b
 		ch <- reflect.DeepEqual(config1, config2)
 	}()
 }
+
+
+
+func (self *SimpleCompare) Diff(config1, config2 contracts.IConfig, ch chan string) {
+	go func(){
+		eq := reflect.DeepEqual(config1, config2)
+		//compare
+		if(eq) {
+			ch <- ""
+		}else{
+
+			ch <- ""
+		}
+	}()
+}

@@ -6,30 +6,28 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-
-//implements IConfig
+//Implements IConfig
 //Decorator Pattern to extend its functionality
-type YamlConfig struct{
-	p *Package //favor composition over inheritance
+type YamlConfig struct {
+	Package *Package //favor composition over inheritance
 }
 
 
-func (self *YamlConfig) Unmarshal(in []byte) (chan error) {
-	ch := make(chan error)
+func (self *YamlConfig) Unmarshal(in []byte, ch chan error) {
+
 	go func() {
-		if self.p ==  nil{
-			self.p = &Package{}
+		if self.Package ==  nil{
+			self.Package = &Package{}
 		}
-		ch <- yaml.Unmarshal(in, self.p)
+		ch <- yaml.Unmarshal(in, self.Package)
 	}()
 
-	return ch
 }
 
 func (self *YamlConfig) Marshal() (out []byte, err error) {
-	return yaml.Marshal(self.p)
+	return yaml.Marshal(self.Package)
 }
 
-func (self *YamlConfig) Get() contracts.IConfig{
+func (self *YamlConfig) Get() contracts.IConfig {
 	return self
 }

@@ -8,7 +8,7 @@ import (
 )
 
 var pData1 = `
-kind: "set"
+kind: "Set"
 versionstring: "3.2.1"
 authors:
 - name: Muhammad
@@ -19,7 +19,6 @@ authors:
 
 var pData2 = `
 kind: "set"
-versionstring: "3.2.1"
 authors:
 - name: Muhammad
   email: m.solimanz@hotmail.com
@@ -31,23 +30,28 @@ func main() {
 
 	//Solution1
 	manager := config1.GetInstance()
+
 	if err, res := manager.Compare([]byte(pData1), []byte(pData2)); err != nil {
 		log.Fatalf("error occured %v", err)
 	} else {
-		fmt.Printf("result=%s", res)
+		fmt.Printf("\nresult=%s", res)
 	}
 
 
-	//Solution2
 
+
+	//Solution2
 	manager2 := config2.GetInstance()
 	if err, res := manager2.Compare([]byte(pData1), []byte(pData2)); err != nil {
 		log.Fatalf("error occured %v", err)
 	} else {
-		fmt.Printf("result=%s", res)
+		fmt.Printf("\nresult=%s", res)
 	}
 
-
-
+	if err, res := manager2.Diff([]byte(pData1), []byte(pData2)); err != nil {
+		log.Fatalf("error occured %v", err)
+	} else {
+		fmt.Printf("\ndifference=%s", res)
+	}
 
 }

@@ -1,7 +1,6 @@
 package config2
 
 import (
-//	"errors"
 	contracts "../contracts"
 )
 
@@ -25,8 +24,8 @@ func (self *ConfigManager) Compare(p1 []byte, p2 []byte) (error, bool) {
 
 
 	//first operation
-	ch1 = self.configs[0].Unmarshal(p1)
-	ch2 = self.configs[1].Unmarshal(p2)
+	go self.configs[0].Unmarshal(p1, ch1)
+	go self.configs[1].Unmarshal(p2, ch2)
 
 	//handling errors during unmarshaling
 	if err := <-ch1; err != nil {
@@ -44,5 +43,33 @@ func (self *ConfigManager) Compare(p1 []byte, p2 []byte) (error, bool) {
 
 
 	//return errors.New("error during parsing version string or updating version!"), false
+
+}
+
+
+func (self *ConfigManager) Diff(p1 []byte, p2 []byte) ( error, string){
+	ch1 := make(chan error, 1)
+	ch2 := make(chan error, 1)
+
+
+	//first operation
+	go self.configs[0].Unmarshal(p1, ch1)
+	go self.configs[1].Unmarshal(p2, ch2)
+
+	//handling errors during unmarshaling
+	if err := <-ch1; err != nil {
+		return err, ""
+	}
+
+	if err := <-ch2; err != nil {
+		return err, ""
+	}
+
+
+	diff := make(chan string)
+	go self.comparer.Diff(self.configs[0], self.configs[1], diff)
+
+	return nil, <-diff
+
 
 }
