@@ -4,14 +4,15 @@ import (
 	"sync"
 	"../contracts"
 	"../comparison"
+	. "../conf"
 )
 
 //this should initialize the wrapper and returns a behaviour (interface) based on some sort of Dependency Injection
-var instance IManager
+var instance contracts.IManager
 var mutex sync.Mutex
 
 //Factory Method Pattern - Singleton Pattern
-func GetInstance() IManager{
+func GetInstance() contracts.IManager{
 
 	//check-lock-check technique
 	if instance == nil{

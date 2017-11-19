@@ -1,4 +1,4 @@
-package config2
+package conf
 
 import (
 	. "../external"
@@ -8,6 +8,13 @@ import (
 //implements IConfig
 type JsonConfig struct{
 	p *Package
+}
+
+func (self *JsonConfig) UpdateVersion(done chan bool) {
+
+	go func() {
+		done <- true
+	}()
 }
 
 func (self *JsonConfig) Unmarshal(in []byte, ch chan error) {

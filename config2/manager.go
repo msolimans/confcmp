@@ -9,7 +9,7 @@ type ConfigManager struct {
 	comparer contracts.ICompare//set strategy (which comparer should be used, easy to change in future)
 }
 
-func newManager(configs []contracts.IConfig, comparer contracts.ICompare) IManager {
+func newManager(configs []contracts.IConfig, comparer contracts.ICompare) contracts.IManager {
 	return &ConfigManager{configs,comparer }
 }
 

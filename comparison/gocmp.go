@@ -16,13 +16,11 @@ func newGoCompare() *GoCompare {
 }
 
 
-
 func (self *GoCompare) Compare(config1, config2 contracts.IConfig, ch chan bool) {
 	go func(){
 		ch <- reflect.DeepEqual(config1, config2)
 	}()
 }
-
 
 
 func (self *GoCompare) Diff(config1, config2 contracts.IConfig, ch chan string) {

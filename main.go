@@ -8,7 +8,7 @@ import (
 )
 
 var pData1 = `
-kind: "Set"
+kind: "set"
 versionstring: "3.2.1"
 authors:
 - name: Muhammad
@@ -19,6 +19,7 @@ authors:
 
 var pData2 = `
 kind: "set"
+versionstring: "3.2.1"
 authors:
 - name: Muhammad
   email: m.solimanz@hotmail.com

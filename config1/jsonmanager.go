@@ -16,14 +16,14 @@ func newJsonManager() *JsonManager {
 	return &JsonManager{make([]*Package, 2)} //2 packages, in case we need more in future
 }
 
-func (self *JsonManager) unmarshal(in []byte, out interface{}) (chan error) {
-	ch := make(chan error)
+func (self *JsonManager) Unmarshal(in []byte, out interface{}, ch chan error)  {
+
 	ch <- errors.New("Not Implemented")
-	return ch
+
 }
 
 
-func (self *JsonManager) marshal(in interface{}) (out []byte, err error) {
+func (self *JsonManager) Marshal(in interface{}) (out []byte, err error) {
 	return nil, errors.New("Not implemented")
 }
 
