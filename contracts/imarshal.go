@@ -4,5 +4,5 @@ package contracts
 type IMarshal interface{
 
 
-	Compare(p1 []byte, p2 []byte) ( error, bool)//can be separated to different behaviour (to say for example IComparable)
+	Compare() ( error, bool)//can be separated to different behaviour (to say for example IComparable)
 }

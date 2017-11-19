@@ -1,36 +1,35 @@
 package config2
 
 import (
-	"sync"
 	"../contracts"
 	"../comparison"
 	. "../conf"
 )
 
-//this should initialize the wrapper and returns a behaviour (interface) based on some sort of Dependency Injection
-var instance contracts.IManager
-var mutex sync.Mutex
+//Factory Method Pattern (Inject different Manager here)
+func GetInstance(p1, p2 []byte) (error, contracts.IManager) {
+	comparer := comparison.GetInstance()
+	con := make([]contracts.IConfig, 2)
+	con[0] = new(YamlConfig)//use or inject differnt configs here (JsonConfig for example)
+	con[1] = new(YamlConfig)
 
-//Factory Method Pattern - Singleton Pattern
-func GetInstance() contracts.IManager{
 
-	//check-lock-check technique
-	if instance == nil{
-		//lock the executuion to make it thread-safe
-		mutex.Lock()
-		//don't forget to defere unlock call
-		defer mutex.Unlock()
+	ch1 := make(chan error, 1)
+	ch2 := make(chan error, 1)
 
-		//check again to make sure it is still nil inside lock block
-		if instance == nil{
+	//first operation
+	go con[0].Unmarshal(p1, ch1)
+	go con[1].Unmarshal(p2, ch2)
 
-			c := comparison.GetInstance()
-			con := make([]contracts.IConfig,2)
-			con[0] = new(YamlConfig)
-			con[1] = new(YamlConfig)
-			instance = newManager(con, c)
-		}
+	//handling errors during unmarshaling
+	if err := <-ch1; err != nil {
+		return err, nil
 	}
 
-	return instance
+	if err := <-ch2; err != nil {
+		return err, nil
+	}
+
+	return nil, newManager(con, comparer)
+
 }

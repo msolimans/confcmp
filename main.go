@@ -8,11 +8,11 @@ import (
 )
 
 var pData1 = `
-kind: "set"
+kind: "st"
 versionstring: "3.2.1"
 authors:
-- name: Muhammad
-  email: m.solimanz@hotmail.com
+- name: Judson
+  email: judon@opentable.com
 - name: sam
   email: sam@opentable.com
 `
@@ -30,29 +30,36 @@ authors:
 func main() {
 
 	//Solution1
-	manager := config1.GetInstance()
+	if err, manager := config1.GetInstance([]byte(pData1), []byte(pData2)); err != nil{
+		log.Fatalf("error occured during initializing manager %v", err)
+	}else{
+		if err, res := manager.Compare(); err != nil {
+			log.Fatalf("error occured %v", err)
+		} else {
+			fmt.Printf("\nresult=%s", res)
+		}
 
-	if err, res := manager.Compare([]byte(pData1), []byte(pData2)); err != nil {
-		log.Fatalf("error occured %v", err)
-	} else {
-		fmt.Printf("\nresult=%s", res)
 	}
-
 
 
 
 	//Solution2
-	manager2 := config2.GetInstance()
-	if err, res := manager2.Compare([]byte(pData1), []byte(pData2)); err != nil {
+	if err, manager2 := config2.GetInstance([]byte(pData1), []byte(pData2)); err != nil{
 		log.Fatalf("error occured %v", err)
-	} else {
-		fmt.Printf("\nresult=%s", res)
+	}else{
+		if err, res := manager2.Compare(); err != nil {
+			log.Fatalf("error occured %v", err)
+		} else {
+			fmt.Printf("\nresult=%s", res)
+		}
+
+		if err, res := manager2.Diff(); err != nil {
+			log.Fatalf("error occured %v", err)
+		} else {
+			fmt.Printf("\ndifference=%s", res)
+		}
+
 	}
 
-	if err, res := manager2.Diff([]byte(pData1), []byte(pData2)); err != nil {
-		log.Fatalf("error occured %v", err)
-	} else {
-		fmt.Printf("\ndifference=%s", res)
-	}
 
 }

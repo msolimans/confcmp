@@ -38,24 +38,8 @@ func (self *ConfigManager) UpdateVersions(done chan bool) {
 
 
 
-func (self *ConfigManager) Compare(p1 []byte, p2 []byte) (error, bool) {
+func (self *ConfigManager) Compare() (error, bool) {
 
-	ch1 := make(chan error, 1)
-	ch2 := make(chan error, 1)
-
-
-	//first operation
-	go self.configs[0].Unmarshal(p1, ch1)
-	go self.configs[1].Unmarshal(p2, ch2)
-
-	//handling errors during unmarshaling
-	if err := <-ch1; err != nil {
-		return err, false
-	}
-
-	if err := <-ch2; err != nil {
-		return err, false
-	}
 
 	done := make(chan bool, 1) //only 1 val and should be closed
 	go self.UpdateVersions(done)
@@ -71,29 +55,17 @@ func (self *ConfigManager) Compare(p1 []byte, p2 []byte) (error, bool) {
 }
 
 
-func (self *ConfigManager) Diff(p1 []byte, p2 []byte) ( error, string){
-	ch1 := make(chan error, 1)
-	ch2 := make(chan error, 1)
+func (self *ConfigManager) Diff() ( error, string){
+	done := make(chan bool, 1) //only 1 val and should be closed
+	go self.UpdateVersions(done)
 
+	if <-done {
 
-	//first operation
-	go self.configs[0].Unmarshal(p1, ch1)
-	go self.configs[1].Unmarshal(p2, ch2)
+		diff := make(chan string)
+		go self.comparer.Diff(self.configs[0], self.configs[1], diff)
 
-	//handling errors during unmarshaling
-	if err := <-ch1; err != nil {
-		return err, ""
+		return nil, <-diff
 	}
 
-	if err := <-ch2; err != nil {
-		return err, ""
-	}
-
-
-	diff := make(chan string)
-	go self.comparer.Diff(self.configs[0], self.configs[1], diff)
-
-	return nil, <-diff
-
-
+	return  errors.New("error during parsing version string or updating version!"), ""
 }
